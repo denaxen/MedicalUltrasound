@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <math.h>
 #include <vector>
+#include <cstdio>
 
 using namespace std;
 
@@ -204,7 +205,7 @@ FILE *f_csv = NULL;
 double signal(double t, double fc) {
     return sin(M_PI * t / DT_WIDTH) * sin(M_PI * t / DT_WIDTH) * sin(2 * M_PI * t / DT_CARRYING * fc);
 }
-
+/**
 void write_to_csv() { //old
     for (int i = 0; i < SENSORS; i++) {
         //instead sensors[i].writeToCSV();
@@ -232,12 +233,13 @@ void write_to_csv() { //old
     fprintf(f_csv, "\n");
     written++;
 }
-void WholeWriteToCSV() { //new
+**/
+void wholeWriteToCSV() { //new
     for (int i = 0; i < SENSORS; i++)
     {
-        sensors[i].writeToCSV();
+        sensors[i].writeToCSV(f_csv);
     }
-    
+
     fprintf(f_csv, "\n");
     written++;
 }
