@@ -40,6 +40,7 @@ class Solver {
 	void step();
 	void fixNodes();
 	void writeToCSV();
+    void initSetting();
 
 	~Solver();
 };

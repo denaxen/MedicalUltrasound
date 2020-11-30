@@ -1,0 +1,16 @@
+{"Constants" : { 
+      "VERTICES": 5,
+      "OBSTACLES_TOTAL": 10,
+      "DOTS_TOTAL": 100,
+      "SENSORS": 32,
+      "DX_SENSORS": 4.6875,
+      "X": 500.0,
+      "Y": 500.0,
+      "ZERO": 0.000001,
+      "POINTS_IN_DOT_WAVEFRONT": 4000,
+      "T_MULTIPLIER": 0.005,
+      "DT_DIGITIZATION": 16.0e-1,
+      "MINLEN": 0.1,
+      "DT_DETERIORATION": 1.0,
+      "DETERIORATION" 0.9999}
+ }
