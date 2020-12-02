@@ -1,4 +1,7 @@
 #include "Solver.h"
+#include "Constants.h"
+
+#include "json.hpp"
 #include <fstream>
 #include <iostream>
 
@@ -333,4 +336,23 @@ void Solver::writeToCSV() {
 		csvFile.close();
 	}
 }
+void Solver::initSetting() {
+    nlohmann::json jsonData;
+    std::ifstream config("../res/config.json");
+    config >> jsonData;
 
+    VERTICES = jsonData["Constants"]["VERTICES"];
+    POINTS_IN_DOT_WAVEFRONT = jsonData["Constants"]["POINTS_IN_DOT_WAVEFRONT"];
+    OBSTACLES_TOTAL = jsonData["Constants"]["OBSTACLES_TOTAL"];
+    DOTS_TOTAL = jsonData["Constants"]["DOTS_TOTAL"];
+    SENSORS = jsonData["Constants"]["SENSORS"];
+    DX_SENSORS = jsonData["Constants"]["DX_SENSORS"];
+    ZERO = jsonData["Constants"]["ZERO"];
+    X = jsonData["Constants"]["X"];
+    Y = jsonData["Constants"]["Y"];
+    T_MULTIPLIER = jsonData["Constants"]["T_MULTIPLIER"];
+    DT_DIGITIZATION = jsonData["Constants"]["DT_DIGITIZATION"];
+    MINLEN = jsonData["Constants"]["MINLEN"];
+    DT_DETERIORATION = jsonData["Constants"]["DT_DETERIORATION"];
+    DETERIORATION = jsonData["Constants"]["DETERIORATION"];
+}
