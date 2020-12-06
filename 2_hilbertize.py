@@ -55,7 +55,6 @@ for one_file in raw_data:
                 # near-zero freqencies somehow are exremely large
                 plt.plot(np.abs(fft)[10:])
                 maxf += np.abs(fft)[10:].argmax()
-                #plt.savefig(args.output + "_fft_" + str(i) + ".png")
                 # plt.clf()
 
             mid = maxf/len(vals)
@@ -63,7 +62,6 @@ for one_file in raw_data:
             for i, row in enumerate(vals):
                 fft = np.fft.rfft(row)
                 for j, freq in enumerate(fft):
-                    # if not (args.freq_min <= j <= args.freq_max):
                     if not (mid - window/2.0 <= j <= mid + window/2.0):
                         fft[j] = 0
                 res_fft.append(np.abs(hilbert(np.fft.irfft(fft))))
