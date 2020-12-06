@@ -1,7 +1,6 @@
 #ifndef SOLVER_OBSTACLE_H
 #define SOLVER_OBSTACLE_H
 
-#include "Constants.h"
 #include "Vector2.h"
 
 class Obstacle {
