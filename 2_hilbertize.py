@@ -11,28 +11,21 @@ def final(file, val, pref):
 dir = 'data/baseline/Sensor{}'  # function to create final files
 
 import matplotlib.pyplot as plt  # directory for saving
-import argparse
 import os
 import re
-import png
 import math
+import json
 import csv
 import numpy as np
 from scipy.signal import hilbert
 import matplotlib
 matplotlib.use('Agg')
 
-# Creating parser for powershell
-parser = argparse.ArgumentParser(description='Hilbertizing sensor data')
+# Readin config
+with open('res/config.json') as jf:
+    configuration = json.load(jf)
+    window = configuration['WINDOW']
 
-parser.add_argument(
-    '--window',
-    required=True,
-    type=int,
-    metavar='WINDOW',
-    help='Width of the frequency window'
-)
-args = parser.parse_args()
 cnt = 0
 cnt_dirs = 0
 file_names = []
@@ -73,7 +66,7 @@ for one_file in raw_data:
                 fft = np.fft.rfft(row)
                 for j, freq in enumerate(fft):
                     # if not (args.freq_min <= j <= args.freq_max):
-                    if not (mid - args.window/2.0 <= j <= mid + args.window/2.0):
+                    if not (mid - window/2.0 <= j <= mid + window/2.0):
                         fft[j] = 0
                 res_fft.append(np.abs(hilbert(np.fft.irfft(fft))))
 
