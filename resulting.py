@@ -20,11 +20,14 @@ def final(file, val, pref):
 
 class Result:
     def __init__(self, dir = 'data/baseline/Sensor{}', conf = 'res/config.json'):
-        #self.dir = 'data/baseline/Sensor{}' # directory for final files,by sensors
+         # directory for final files,by sensors
         with open(conf) as jf:
             configuration = json.load(jf)
             self.window = configuration['WINDOW']# Reading config
             self.number_of_sensors = configuration['NUMBER_OF_SENSORS']
+            self.csv_root1 = configuration['ROOTS']['CSV_ROOT1']
+            self.csv_root2 = configuration['ROOTS']['CSV_ROOT2']
+            self.png_spectrum_root = configuration['ROOTS']['SPECTRUM']
         self.dir = dir
         self.cnt = 0
         self.raw_data = self.getRaw()
@@ -45,7 +48,7 @@ class Result:
     def hilbert(self):
         for one_file in self.raw_data:
             with open(self.dir.format(self.cnt) + '/'+ one_file) as fi:
-                with open(self.dir.format(self.cnt)+"/hilb.csv", 'w') as fo:
+                with open(self.dir.format(self.cnt)+self.csv_root1, 'w') as fo:
                     vals_init = [[float(x) for x in l.split()] for l in fi.readlines()]
                     vals = list(zip(*vals_init))
                     # Narrowband filtering + Hilbert transformation
@@ -72,7 +75,7 @@ class Result:
 
                     print(mid)
                     # saving spectrum
-                    plt.savefig(self.dir.format(self.cnt) +'/spectrum.png')
+                    plt.savefig(self.dir.format(self.cnt) +self.png_spectrum_root)
                     plt.cla()
                     res = list(zip(*res_fft))
                     max_data = max(map(max, res))
@@ -84,7 +87,7 @@ class Result:
                             stri += " "
                         print(stri, file=fo)
 
-                    with open(self.dir.format(self.cnt) + "/2hilb.csv", 'w') as fu:
+                    with open(self.dir.format(self.cnt) + self.csv_root2, 'w') as fu:
                         for r in vals_init:
                             stri = ""
                             for t in r:

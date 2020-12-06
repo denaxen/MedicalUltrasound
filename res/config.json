@@ -38,7 +38,13 @@
       "NODES_NUM":615
    },
    "WINDOW": 10000,
-   "NUMBER_OF_SENSORS":32
+   "NUMBER_OF_SENSORS":32,
+   "ROOTS":
+   {
+      "CSV_ROOT1":"/hilb.csv",
+      "SPECTRUM":"/spectrum.png",
+      "CSV_ROOT2":"/2hilb.csv"
+   }
  }
 
 
