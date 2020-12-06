@@ -13,49 +13,53 @@ Solver::Solver() {
 void Solver::init() {
 	initObstacles();
 	initDots();
-
-	std::ifstream setupFile("res/setup_base.txt");
-	setupFile >> rays_num >> focus >> PIES;
-	setupFile.close();
+	nlohmann::json jsonData;
+    std::ifstream config("../res/config.json");
+    config >> jsonData;
+	rays_num = jsonData["SETUP_BASE"]["RAYS_NUM"];
+	focus =   jsonData["SETUP_BASE"]["FOCUS"];
+	PIES = jsonData["SETUP_BASE"]["PIES"];
+	// nodesNum = jsonData["SETUP_BASE"]["NODES_NUM"];
+	//может понадобиться, оно почему-то не считывалось, может быть тут 
+	// что -то как раз ломалось 
 }
 
 void Solver::initObstacles() {
-	std::ifstream file("res/obstacles.txt");
-	file >> OBSTACLES;
+	nlohmann::json jsonData;
+    std::ifstream config("../res/config.json");
+    config >> jsonData;
+	OBSTACLES= jsonData["OBSTACLES"]["NUMBER_OF_OBSTACLES"];
 
 	for (int i = 0; i < OBSTACLES; i++) {
 		Obstacle obstacle;
 		for (int j = 0; j < VERTICES; j++) {
-			int x, y;
-			file >> x >> y;
+			int x = jsonData['OBSTACLES']['X'][i];
+			int y = jsonData['OBSTACLES']['Y'][i];
 			Vector2 myVec(x, y);
 			obstacle.addPos(myVec);
 		}
-		double c_rel;
-		file >> c_rel;
+		double c_rel = jsonData['OBSTACLES']['C_REL'];
 		obstacle.setCRel(c_rel);
-
 		obstacle.addPos(obstacle.getPos(0));
 		obstacles.push_back(obstacle);
 	}
 }
 
 void Solver::initDots() {
-	std::ifstream file("res/dots.txt");
-	file >> DOTS;
+	nlohmann::json jsonData;
+    std::ifstream config("../res/config.json");
+    config >> jsonData;
+	DOTS =  jsonData["DOTS"]["NUMBER_OF_DOTS"];
 
 	for (int i = 0; i < DOTS; i++) {
 		Dot dot;
-		int x, y;
-		double brightness;
-		file >> x >> y >> brightness;
-
+		int x = jsonData['DOTS']['X'][i];
+		int y = jsonData['DOTS']['Y'][i];
+		double brightness = jsonData['DOTS']['B'][i];
 		dot.setPos(Vector2(x, y));
 		dot.setBrightness(brightness);
 		dots.push_back(dot);
 	}
-
-	file.close();
 }
 
 void Solver::propagate() {

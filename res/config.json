@@ -12,5 +12,32 @@
       "DT_DIGITIZATION": 16.0e-1,
       "MINLEN": 0.1,
       "DT_DETERIORATION": 1.0,
-      "DETERIORATION" 0.9999}
+      "DETERIORATION": 0.9999
+      },
+
+   "DOTS":
+   {
+         "NUMBER_OF_DOTS":3,
+         "X":[200, 250, 300],
+         "Y":[50, 100, 150],
+         "B":[1,1,1]
+   },
+
+   "OBSTACLES":
+   {
+      "NUMBER_OF_OBSTACLES":1,
+      "X":[0, 500, 500, 0],
+      "Y":[300, 400, 400, 400],
+      "C_REL":1.0
+   },
+   "SETUP_BASE":
+   {
+      "RAYS_NUM":200,
+      "FOCUS":400.0,
+      "PIES":6.0,
+      "NODES_NUM":615
+   }
  }
+
+
+ 
