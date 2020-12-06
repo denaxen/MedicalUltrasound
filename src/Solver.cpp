@@ -33,12 +33,12 @@ void Solver::initObstacles() {
 	for (int i = 0; i < OBSTACLES; i++) {
 		Obstacle obstacle;
 		for (int j = 0; j < VERTICES; j++) {
-			int x = jsonData['OBSTACLES']['X'][i];
-			int y = jsonData['OBSTACLES']['Y'][i];
+			int x = jsonData["OBSTACLES"]['X'][i];
+			int y = jsonData["OBSTACLES"]['Y'][i];
 			Vector2 myVec(x, y);
 			obstacle.addPos(myVec);
 		}
-		double c_rel = jsonData['OBSTACLES']['C_REL'];
+		double c_rel = jsonData["OBSTACLES"]["C_REL"];
 		obstacle.setCRel(c_rel);
 		obstacle.addPos(obstacle.getPos(0));
 		obstacles.push_back(obstacle);
@@ -53,9 +53,9 @@ void Solver::initDots() {
 
 	for (int i = 0; i < DOTS; i++) {
 		Dot dot;
-		int x = jsonData['DOTS']['X'][i];
-		int y = jsonData['DOTS']['Y'][i];
-		double brightness = jsonData['DOTS']['B'][i];
+		int x = jsonData["DOTS"]['X'][i];
+		int y = jsonData["DOTS"]['Y'][i];
+		double brightness = jsonData["DOTS"]['B'][i];
 		dot.setPos(Vector2(x, y));
 		dot.setBrightness(brightness);
 		dots.push_back(dot);
