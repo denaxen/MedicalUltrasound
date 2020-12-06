@@ -43,7 +43,11 @@
    {
       "CSV_ROOT1":"/hilb.csv",
       "SPECTRUM":"/spectrum.png",
-      "CSV_ROOT2":"/2hilb.csv"
+      "CSV_ROOT2":"/2hilb.csv",
+      "PREHILB":"/prehilb.png",
+      "SECOND_HILB":"/2hilb.png",
+      "INPUT":"data/final_raw_data.csv",
+      "OUTPUT":"data/result.png"
    }
  }
 

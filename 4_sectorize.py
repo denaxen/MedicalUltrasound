@@ -21,14 +21,6 @@ def interpolate(v1, v2, factor):
     return v1 * (1 - factor) + v2 * factor
 
 
-def interpolate3(v0, v1, v2, v3, factor):
-    d = v1
-    b = 0.5 * v0 - v1 + 0.5 * v2
-    a = (-v0 + 3.0 * v2 - 3.0 * v2 + v3) / 6.0
-    c = -0.5 * v0 + 0.5 * v1 - a
-    return a * factor * factor * factor + b * factor * factor + c * factor + d
-
-
 with open(input_data) as ff:
     data = [[abs(float(x)) for x in line.split()] for line in ff.readlines()]
 
