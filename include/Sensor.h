@@ -4,7 +4,6 @@
 #include "Vector2.h"
 #include "Writing.h"
 #include <fstream>
-#include <iomanip>
 
 class Sensor {
  private:
@@ -19,7 +18,6 @@ class Sensor {
 	void clearWriting();
 	void deteriorate();
 	double signal(double t, double fc);
-	void addWriting(Writing &w);
 	void writeToCSV(std::ostream &fout);
 
 };
