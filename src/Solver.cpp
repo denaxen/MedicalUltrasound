@@ -14,10 +14,10 @@ void Solver::init() {
 	initObstacles();
 	initDots();
 	nlohmann::json jsonData;
-    std::ifstream config("../res/config.json");
-    config >> jsonData;
+	std::ifstream config("../res/config.json");
+	config >> jsonData;
 	rays_num = jsonData["SETUP_BASE"]["RAYS_NUM"];
-	focus =   jsonData["SETUP_BASE"]["FOCUS"];
+	focus = jsonData["SETUP_BASE"]["FOCUS"];
 	PIES = jsonData["SETUP_BASE"]["PIES"];
 	// nodesNum = jsonData["SETUP_BASE"]["NODES_NUM"];
 	//может понадобиться, оно почему-то не считывалось, может быть тут 
@@ -26,19 +26,19 @@ void Solver::init() {
 
 void Solver::initObstacles() {
 	nlohmann::json jsonData;
-    std::ifstream config("../res/config.json");
-    config >> jsonData;
-	OBSTACLES= jsonData["OBSTACLES"]["NUMBER_OF_OBSTACLES"];
+	std::ifstream config("../res/config.json");
+	config >> jsonData;
+	OBSTACLES = jsonData["OBSTACLES"]["NUMBER_OF_OBSTACLES"];
 
 	for (int i = 0; i < OBSTACLES; i++) {
 		Obstacle obstacle;
 		for (int j = 0; j < VERTICES; j++) {
-			int x = jsonData['OBSTACLES']['X'][i];
-			int y = jsonData['OBSTACLES']['Y'][i];
+			int x = jsonData["OBSTACLES"]['X'][i];
+			int y = jsonData["OBSTACLES"]['Y'][i];
 			Vector2 myVec(x, y);
 			obstacle.addPos(myVec);
 		}
-		double c_rel = jsonData['OBSTACLES']['C_REL'];
+		double c_rel = jsonData["OBSTACLES"]["C_REL"];
 		obstacle.setCRel(c_rel);
 		obstacle.addPos(obstacle.getPos(0));
 		obstacles.push_back(obstacle);
@@ -47,21 +47,21 @@ void Solver::initObstacles() {
 
 void Solver::initDots() {
 	nlohmann::json jsonData;
-    std::ifstream config("../res/config.json");
-    config >> jsonData;
-	DOTS =  jsonData["DOTS"]["NUMBER_OF_DOTS"];
+	std::ifstream config("../res/config.json");
+	config >> jsonData;
+	DOTS = jsonData["DOTS"]["NUMBER_OF_DOTS"];
 
 	for (int i = 0; i < DOTS; i++) {
 		Dot dot;
-		int x = jsonData['DOTS']['X'][i];
-		int y = jsonData['DOTS']['Y'][i];
-		double brightness = jsonData['DOTS']['B'][i];
+		int x = jsonData["DOTS"]['X'][i];
+		int y = jsonData["DOTS"]['Y'][i];
+		double brightness = jsonData["DOTS"]['B'][i];
 		dot.setPos(Vector2(x, y));
 		dot.setBrightness(brightness);
 		dots.push_back(dot);
 	}
 }
-
+int s = 0;
 void Solver::propagate() {
 	for (int i = 0; i < SENSORS; i++) {
 		double x = X / 2 - DX_SENSORS * (SENSORS / 2 - i);
@@ -76,6 +76,8 @@ void Solver::propagate() {
 		while (finishTime > 0) {
 			step();
 		}
+		s++;
+		break;
 	}
 }
 
@@ -205,12 +207,10 @@ int Solver::checkDots(int node) {
 
 			time = nodes[node]->getTime(dist, obstacles[nodes[node]->getMaterial()].getCRel());
 
-			std::vector<Writing> writing = sensor.getWriting();
 			if (time < nodes[node]->getTEncounter()) {
-				writing.push_back(Writing(-time, nodes[node]->getIntensity(),
-										  1.0 / nodes[node]->getVelocity().getY()));
+				Writing w(-time, nodes[node]->getIntensity(), 1.0 / nodes[node]->getVelocity().getY());
+				sensor.addWriting(w);
 			}
-			sensor.setWriting(writing);
 		}
 	}
 
@@ -333,30 +333,31 @@ void Solver::deteriorate() {
 	}
 }
 void Solver::writeToCSV() {
+	std::ofstream csvFile;
+	csvFile.open("data/baseline/Sensor" + std::to_string(s) + "/raw" + std::to_string(s) + ".csv", std::ios_base::app);
 	for (int i = 0; i < sensors.size(); i++) {
-		std::ofstream csvFile;
-		csvFile.open("data/baseline/Sensor" + std::to_string(i) + "/raw" + std::to_string(i) + ".csv");
 		sensors[i].writeToCSV(csvFile);
-		csvFile.close();
 	}
+	csvFile << std::endl;
+	csvFile.close();
 }
 void Solver::initSetting() {
-    nlohmann::json jsonData;
-    std::ifstream config("../res/config.json");
-    config >> jsonData;
+	nlohmann::json jsonData;
+	std::ifstream config("../res/config.json");
+	config >> jsonData;
 
-    VERTICES = jsonData["Constants"]["VERTICES"];
-    POINTS_IN_DOT_WAVEFRONT = jsonData["Constants"]["POINTS_IN_DOT_WAVEFRONT"];
-    OBSTACLES_TOTAL = jsonData["Constants"]["OBSTACLES_TOTAL"];
-    DOTS_TOTAL = jsonData["Constants"]["DOTS_TOTAL"];
-    SENSORS = jsonData["Constants"]["SENSORS"];
-    DX_SENSORS = jsonData["Constants"]["DX_SENSORS"];
-    ZERO = jsonData["Constants"]["ZERO"];
-    X = jsonData["Constants"]["X"];
-    Y = jsonData["Constants"]["Y"];
-    T_MULTIPLIER = jsonData["Constants"]["T_MULTIPLIER"];
-    DT_DIGITIZATION = jsonData["Constants"]["DT_DIGITIZATION"];
-    MINLEN = jsonData["Constants"]["MINLEN"];
-    DT_DETERIORATION = jsonData["Constants"]["DT_DETERIORATION"];
-    DETERIORATION = jsonData["Constants"]["DETERIORATION"];
+	VERTICES = jsonData["Constants"]["VERTICES"];
+	POINTS_IN_DOT_WAVEFRONT = jsonData["Constants"]["POINTS_IN_DOT_WAVEFRONT"];
+	OBSTACLES_TOTAL = jsonData["Constants"]["OBSTACLES_TOTAL"];
+	DOTS_TOTAL = jsonData["Constants"]["DOTS_TOTAL"];
+	SENSORS = jsonData["Constants"]["SENSORS"];
+	DX_SENSORS = jsonData["Constants"]["DX_SENSORS"];
+	ZERO = jsonData["Constants"]["ZERO"];
+	X = jsonData["Constants"]["X"];
+	Y = jsonData["Constants"]["Y"];
+	T_MULTIPLIER = jsonData["Constants"]["T_MULTIPLIER"];
+	DT_DIGITIZATION = jsonData["Constants"]["DT_DIGITIZATION"];
+	MINLEN = jsonData["Constants"]["MINLEN"];
+	DT_DETERIORATION = jsonData["Constants"]["DT_DETERIORATION"];
+	DETERIORATION = jsonData["Constants"]["DETERIORATION"];
 }

@@ -33,15 +33,17 @@ double Sensor::signal(double t, double fc) {
 	return sin(M_PI * t / DT_WIDTH) * sin(M_PI * t / DT_WIDTH) * sin(2 * M_PI * t / DT_CARRYING * fc);
 }
 
+#include <iostream>
+
 void Sensor::writeToCSV(std::ostream &fout) {
 	double signal = 0;
 	for (auto &w : writing) {
 		if (w.getTime() > 0) {
-			signal += w.getBrightness() * this->signal(w.getTime(), w.getFrequencyCorrection());
+			signal += w.getBrightness() * 1;
 		}
 		w.setTime(w.getTime() + DT_DIGITIZATION);
 	}
-	fout << signal;
+	fout << std::setprecision(2) << signal << " ";
 
 	bool nulls_exist = true;
 	while (nulls_exist) {
@@ -53,5 +55,9 @@ void Sensor::writeToCSV(std::ostream &fout) {
 				break;
 			}
 	}
+}
+
+void Sensor::addWriting(Writing &w) {
+	writing.push_back(w);
 }
 

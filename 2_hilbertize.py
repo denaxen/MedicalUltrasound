@@ -27,7 +27,6 @@ with open('res/config.json') as jf:
     window = configuration['WINDOW']
 
 cnt = 0
-cnt_dirs = 0
 file_names = []
 for i in range(0, 32):
     file_name = os.listdir('data/baseline/Sensor{}/'.format(i))
@@ -38,8 +37,7 @@ for dr in file_names:
     for i in dr:
         if re.match(tpl, i):
             raw_data.append(i)
-        else:
-            continue
+print(raw_data)
 
 
 for one_file in raw_data:
