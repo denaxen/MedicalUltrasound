@@ -153,7 +153,7 @@ void Node::update(double timeStep, double c_rel) {
 Node Node::getReflected(Obstacle obstacle) {
 	double i = intensity;
 	Vector2 vel = ::getReflected(obstacle.getPos(vertice_number), obstacle.getPos(vertice_number + 1),
-									velocity, obstacle.getCRel(), &i);
+								 velocity, obstacle.getCRel(), &i);
 	return Node(Vector2(pos.getX() - (1.00015 * velocity.getX()), pos.getY() - (1.00015 * velocity.getY())),
 				vel,
 				i);
@@ -174,6 +174,31 @@ void Node::addLeftVirtualNeighbor(Node *neighbor) {
 
 void Node::addRightVirtualNeighbor(Node *neighbor) {
 	virtual_neighbors_right.push_back(neighbor);
+}
+
+void Node::deleteLeftVirtualNeighbor(Node *node) {
+	for (int k = 0; k < virtual_neighbors_left.size(); k++) {
+		std::cout << "for virtual_neighbors_left.at(k)" << std::endl;
+		if (virtual_neighbors_left.at(k)) {
+			std::cout << "virtual_neighbors_left.at(k)" << std::endl;
+			if (virtual_neighbors_left.at(k) == node) {
+				std::cout << "virtual_neighbors_left[k] == node" << std::endl;
+//				delete virtual_neighbors_left[j]->virtual_neighbors_right[k];
+				virtual_neighbors_left[k] = NULL;
+			}
+		}
+	}
+}
+
+void Node::deleteRightVirtualNeighbor(Node *node) {
+	for (int k = 0; k < virtual_neighbors_right.size(); k++) {
+		if (virtual_neighbors_right.at(k)) {
+			if (virtual_neighbors_right[k] == node) {
+//				delete virtual_neighbors_left[j]->virtual_neighbors_right[k];
+				virtual_neighbors_right[k] = NULL;
+			}
+		}
+	}
 }
 
 bool isOutside(Node *Node) {
@@ -214,45 +239,19 @@ void Node::restoreWavefront(Node &reflected, Node &refracted) {
 }
 
 void Node::killLeft() {
-	std::cout<<"kill left "<<std::endl;
+	std::cout << "kill left " << std::endl;
 	for (int j = 0; j < virtual_neighbors_left.size(); j++) {
 		if (virtual_neighbors_left[j]) {
-			std::cout<<"virtual_neighbors_left[j]"<<std::endl;
-			for (int k = 0; k < virtual_neighbors_left[j]->virtual_neighbors_right.size(); k++) {
-				if(virtual_neighbors_left[j]->virtual_neighbors_right.size() >= k) {
-					std::cout<<"virtual_neighbors_right if"<<std::endl;
-					std::cout<<"virtual_neighbors_right if1"<<std::endl;
-
-					if(virtual_neighbors_left[j]->virtual_neighbors_right.at(k) ) {
-						std::cout << "yees" << std::endl;
-						if (virtual_neighbors_left[j]->virtual_neighbors_right[k] == this) {
-							std::cout << "this[j]" << std::endl;
-
-//					delete virtual_neighbors_left[j]->virtual_neighbors_right[k];
-							virtual_neighbors_left[j]->virtual_neighbors_right[k] = NULL;
-						}
-					}
-
-				}
-			}
+			std::cout << "virtual_neighbors_left[j]" << std::endl;
+			virtual_neighbors_left[j]->deleteLeftVirtualNeighbor(this);
 		}
 	}
 }
 
 void Node::killRight() {
-	std::cout<<"kill right "<<std::endl;
 	for (int j = 0; j < virtual_neighbors_right.size(); j++) {
 		if (virtual_neighbors_right[j]) {
-			for (int k = 0; k < virtual_neighbors_right[j]->virtual_neighbors_left.size(); k++) {
-				if(virtual_neighbors_right[j]->virtual_neighbors_left.size() >= k) {
-					if(virtual_neighbors_right[j]->virtual_neighbors_left[k]) {
-						if (virtual_neighbors_right[j]->virtual_neighbors_left[k] == this) {
-//					delete virtual_neighbors_right[j]->virtual_neighbors_left[k];
-							virtual_neighbors_right[j]->virtual_neighbors_left[k] = NULL;
-						}
-					}
-				}
-			}
+			virtual_neighbors_left[j]->deleteRightVirtualNeighbor(this);
 		}
 	}
 }

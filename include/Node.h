@@ -53,8 +53,10 @@ class Node {
 	void setRight(Node *right);
 	void setVirtualLeft(const std::vector<Node *> &virtual_neighbors_left);
 	void addLeftVirtualNeighbor(Node *neighbor);
+	void deleteLeftVirtualNeighbor(Node *node);
 	void setVirtualRight(const std::vector<Node *> &virtual_neighbors_right);
 	void addRightVirtualNeighbor(Node *neighbor);
+	void deleteRightVirtualNeighbor(Node *node);
 	void setMarkedForTheKill(int kill_marked);
 
 	void restoreWavefront(Node &reflected, Node &refracted);

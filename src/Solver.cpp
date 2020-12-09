@@ -74,7 +74,9 @@ void Solver::propagate() {
 		initExplosion(sensor.getPos());
 		resetTime();
 		while (finishTime > 0) {
-//			std::cout << "iter: " << h << std::endl;
+			if(h%1000==0) {
+				std::cout << "iter: " << h << std::endl;
+			}
 			step();
 			h++;
 //			if (h > 10) {
@@ -83,7 +85,7 @@ void Solver::propagate() {
 //			break;
 		}
 		s++;
-		break;
+//		break;
 	}
 }
 
@@ -223,8 +225,8 @@ int Solver::checkDots(int node) {
 			time = nodes[node]->getTime(dist, obstacles[nodes[node]->getMaterial()].getCRel());
 			if (time < nodes[node]->getTEncounter()) {
 				Writing w(-time, nodes[node]->getIntensity(), 1.0 / nodes[node]->getVelocity().getY());
-				std::cout << std::setprecision(2) << "writing: " << nodes[node]->getIntensity() << " "
-						  << 1.0 / nodes[node]->getVelocity().getY() << std::endl;
+//				std::cout << std::setprecision(2) << "writing: " << nodes[node]->getIntensity() << " "
+//						  << 1.0 / nodes[node]->getVelocity().getY() << std::endl;
 				sensor.addWriting(w);
 			}
 		}
@@ -308,7 +310,6 @@ void Solver::fixNodes() {
 						std::vector<Writing> wr = sensor.getWriting();
 						wr[j].setNode(NULL);
 						sensor.setWriting(wr);
-						sensor.clearWriting();
 					}
 				}
 			}
