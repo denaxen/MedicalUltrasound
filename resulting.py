@@ -35,6 +35,15 @@ class Result:
             self.second_hilb = configuration['ROOTS']['SECOND_HILB']
             self.input_data = configuration['ROOTS']['INPUT']
             self.output_data = configuration['ROOTS']['OUTPUT']
+
+            # for phasing
+            self.rays_num = configuration['SETUP_BASE']['RAYS_NUM']
+            self.focus = configuration['SETUP_BASE']['FOCUS']
+            self.pies = configuration['SETUP_BASE']['PIES']
+            self.written = configuration['SETUP_BASE']['WRITTEN']
+            self.dx_sensors = configuration['Constants']['DX_SENSORS']
+            self.dt_digitization = configuration['Constants']['DT_DIGITIZATION']
+            self.sensors = configuration['Constants']['SENSORS']
         self.dir = dir
         self.cnt = 0
         self.raw_data = self.getRaw()
@@ -98,6 +107,47 @@ class Result:
                     final(file=self.dir.format(self.cnt), val=res, pref=self.second_hilb)
                     # writing final graphics
             self.cnt += 1  # plussing to copy next files in another folder
+
+    def phasing(self, anti_attenuator=0): # just rewrite phasing.c, focus.cpp is useless
+        max_length = self.written
+        magic = self.dx_sensors / self.dt_digitization
+        res_length = int(max_length / magic)
+        values = np.zeros((self.sensors, self.sensors, max_length))
+        res = np.zeros((self.rays_num, res_length))
+        for i in range(self.sensors):
+            path = './data/baseline/Sensor{}/2hilb.csv'.format(i)
+            with open(path) as f:
+                data_from_file = f.read().split()
+                for j in range(max_length):
+                    for k in range(self.sensors):
+                        values[i, k, j] = data_from_file[j * self.sensors + k]
+
+        delay = [0 for _ in range(self.sensors)]
+        for i in range(self.rays_num):
+            alpha = math.pi/4.0 + ((math.pi/2.0) / self.rays_num) * i
+            sin_alpha = math.sin(alpha)
+            cos_alpha = math.cos(alpha)
+            for j in range(self.sensors):
+                l = self.sensors / 2 - j
+                delay[j] = self.focus - math.sqrt(self.focus**2 * sin_alpha**2 + (self.focus-l)**2)
+
+            for j in range(self.sensors):
+                for k in range(self.sensors):
+                    for l in range(res_length):
+                        delayed = int(magic*l - magic*(delay[j] + delay[k]))
+                        if delayed < 0:
+                            delayed = 0
+                        if delayed > max_length - 1:
+                            delayed = max_length - 1
+                        res[i, j] += values[j, k, delayed]
+
+        with open('./data/final_raw_data.csv', 'w') as final_raw_data:
+            for i in range(self.rays_num):
+                for j in range(res_length):
+                    final_raw_data.write(str(res[i, j] * (1 + anti_attenuator * j / float(res_length))) + ' ')
+                final_raw_data.write('\n')
+
+
 
 
 
@@ -166,6 +216,7 @@ class Result:
 
 
 result = Result()
-result.hilbert()
+# result.hilbert()
+result.phasing() # TODO: it doesn't work. Just rewrite phasing.c
 result.sectorize()
 

@@ -35,7 +35,7 @@
       "RAYS_NUM":200,
       "FOCUS":400.0,
       "PIES":6.0,
-      "NODES_NUM":615
+      "WRITTEN":615
    },
    "WINDOW": 10000,
    "NUMBER_OF_SENSORS":32,
